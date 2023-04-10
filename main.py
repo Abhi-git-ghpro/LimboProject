@@ -1,4 +1,5 @@
 import pygame
+from random import randint,choice
 from sys import exit
 pygame.init()
 
@@ -61,6 +62,32 @@ class Player(pygame.sprite.Sprite):
         self.movement()
         self.apply_gravity()
 
+class obstacle(pygame.sprite.Sprite):
+    def __init__(self,type):
+        super().__init__()
+        if type=='enemy':
+            enemy=pygame.image.load('obstacle.png')
+            self.enemy_walk=[enemy]
+
+        self.animation_index=0
+        self.image=self.enemy_walk[self.animation_index]
+        self.rect=self.image.get_rect(midbottom=(randint(900,1100),300))                              
+
+    def animation_state(self):
+        self.animation_index+=0.1
+        if self.animation_index>len(self.enemy_walk):
+            self.animation_index=0
+        self.image=self.enemy_walk[int(self.animation_index)]
+
+    def destory(self):
+        if self.rect.x<=-100:
+            self.kill()
+
+    def update(self):
+        self.animation_state()
+        self.rect.x-=6
+        self.destory()
+
 def display_score():
     current_time=pygame.time.get_ticks()//1000-start_time
     score_surf=font.render(f'Score:{current_time}',False,"Blue")
@@ -71,10 +98,16 @@ def display_score():
 #creating group of player sprite class
 player=pygame.sprite.GroupSingle()
 player.add(Player())
+obstacle_group=pygame.sprite.Group()
 
 #Icon and title of game
 pygame.display.set_caption("Limbo inspired test")
 
+obstacle_timer=pygame.USEREVENT+1
+pygame.time.set_timer(obstacle_timer,1500)
+
+enemy_animation_timer=pygame.USEREVENT+2
+pygame.time.set_timer(enemy_animation_timer,500)
 
 Running =False  #keeps track of state of game
 while(True):
@@ -91,10 +124,16 @@ while(True):
                 Running =True
                 start_time=pygame.time.get_ticks()//1000
 
+        else:
+            if event.type==obstacle_timer:
+                obstacle_group.add(obstacle(choice(['enemy'])))
+
     if Running:
         score=display_score()
         player.draw(screen)
         player.update()
+        obstacle_group.draw(screen)
+        obstacle_group.update()
 
     else:
         screen.fill("White")
