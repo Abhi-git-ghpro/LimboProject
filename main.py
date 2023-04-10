@@ -77,7 +77,7 @@ pygame.display.set_caption("Limbo inspired test")
 
 # def player(x, y):
 #     screen.blit(playerImg, (x, y))
-running =True
+Running =False
 jump=False
 while(True):
 
@@ -89,16 +89,14 @@ while(True):
             pygame.quit()
             exit()
 
-        
-
-        if running==False:
+        if Running==False:
             if event.type==pygame.KEYDOWN and event.key==pygame.K_SPACE:
                 Running =True
                 start_time=pygame.time.get_ticks()//1000
-        if event.type==pygame.KEYUP and event.key==pygame.K_SPACE:
-            Running = False
-            start_time=pygame.time.get_ticks()//1000
-    if running:
+        else:
+            if event.type==pygame.KEYUP and event.key==pygame.K_SPACE:
+                start_time=pygame.time.get_ticks()//1000
+    if Running:
         score=display_score()
         player.draw(screen)
         player.update()
