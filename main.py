@@ -21,23 +21,28 @@ class Player(pygame.sprite.Sprite):
         self.rect=self.image.get_rect(midbottom=(80,300))
         self.gravity=0
 
-    def jump(self):
+    def jump(self,keys):
         keys=pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom==300:
             self.gravity=-20
             self.rect.y+=self.gravity
 
-    def right(self):
+    def right(self,keys):
         keys=pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
             self.rect.x+=5
             self.animation_state()
 
-    def left(self):
-        keys=pygame.key.get_pressed()
+    def left(self,keys):
         if keys[pygame.K_LEFT]:
             self.rect.x-=5
             self.animation_state()
+        
+    def movement(self):
+        keys=pygame.key.get_pressed()
+        self.jump(keys)
+        self.right(keys)
+        self.left(keys)
 
     def apply_gravity(self):
         if self.rect.bottom<300:
@@ -45,15 +50,14 @@ class Player(pygame.sprite.Sprite):
             self.rect.y+=self.gravity
 
     def animation_state(self):
-        self.player_index+=0.2
-        if self.player_index>len(self.player_walk):
-            self.player_index=0
+        if self.rect.bottom==300:
+            self.player_index+=0.2
+            if self.player_index>len(self.player_walk):
+                self.player_index=0
         self.image=self.player_walk[int(self.player_index)]
 
     def update(self):
-        self.jump()
-        self.right()
-        self.left()
+        self.movement()
         self.apply_gravity()
 
 def display_score():
