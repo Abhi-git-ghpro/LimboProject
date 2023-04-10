@@ -9,6 +9,7 @@ clock=pygame.time.Clock()
 start_time=0
 score=0
 
+#creating player sprite class
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -67,75 +68,44 @@ def display_score():
     screen.blit(score_surf,score_rect)
     return current_time
 
+#creating group of player sprite class
 player=pygame.sprite.GroupSingle()
 player.add(Player())
 
 #Icon and title of game
 pygame.display.set_caption("Limbo inspired test")
 
-# playerImg = pygame.image.load('player1.png')
-# playerX = 370
-# playerY = 480
-# playerX_change = 0
-# playerY_change=0
 
-# def player(x, y):
-#     screen.blit(playerImg, (x, y))
-Running =False
-jump=False
+Running =False  #keeps track of state of game
 while(True):
-
- #   screen.fill((225,225,225))
-    #screen.fill((0,0,0))
     screen.blit(sky,(0,0))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-
+        
+        #intro page
         if Running==False:
             if event.type==pygame.KEYDOWN and event.key==pygame.K_SPACE:
                 Running =True
                 start_time=pygame.time.get_ticks()//1000
-        else:
-            if event.type==pygame.KEYUP and event.key==pygame.K_SPACE:
-                start_time=pygame.time.get_ticks()//1000
+
     if Running:
         score=display_score()
         player.draw(screen)
         player.update()
-        keys=pygame.key.get_pressed()
 
     else:
         screen.fill("White")
         score_message=font.render(f'Your Score:{score}',False,"Pink")
         score_rect=score_message.get_rect(center=(400,300))
+        game_message=font.render("Press space to start game",False,"Pink")
+        game_message_rect=game_message.get_rect(center=(400,300))
 
         if score:
             screen.blit(score_message,score_rect)
-    #     if event.type == pygame.KEYDOWN:
-    #         if event.key == pygame.K_LEFT:
-    #             playerX_change = -0.5
-    #             playerX += playerX_change
-    #         if event.key == pygame.K_RIGHT:
-    #             playerX_change = 0.5
-    #             playerX += playerX_change
-    #         if event.key == pygame.K_SPACE:
-    #             playerY_change=-1
-    #             while(playerY!=350):
-    #                 #time.sleep(0.1)
-    #                 playerY+=playerY_change
-    #     if event.type == pygame.KEYUP:
-    #         if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-    #             playerX_change = 0
-    #         if event.key == pygame.K_SPACE:
-    #             time.sleep(0.5)
-    #             playerY=480
-    # player(playerX,playerY)
-    # playerX+=playerX_change
-    # if playerX <= 0:
-    #     playerX = 0
-    # elif playerX >= 736:
-    #     playerX = 736
+        else:
+            screen.blit(game_message,game_message_rect)
     pygame.display.update()
     clock.tick(60)
