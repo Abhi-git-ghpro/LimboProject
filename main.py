@@ -27,6 +27,16 @@ class Player(pygame.sprite.Sprite):
             self.gravity=-20
             self.rect.y+=self.gravity
 
+    def right(self):
+        keys=pygame.key.get_pressed()
+        if keys[pygame.K_RIGHT]:
+            self.rect.x+=5
+
+    def left(self):
+        keys=pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.rect.x-=5
+
     def apply_gravity(self):
         if self.rect.bottom<300:
             self.gravity+=1
@@ -40,6 +50,8 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.jump()
+        self.right()
+        self.left()
         self.apply_gravity()
         self.animation_state()
 
