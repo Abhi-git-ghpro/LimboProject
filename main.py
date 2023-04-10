@@ -2,6 +2,7 @@ import pygame
 from sys import exit
 pygame.init()
 
+sky=pygame.image.load('background.png')
 font=pygame.font.Font(None,50)
 screen = pygame.display.set_mode((800, 400))
 clock=pygame.time.Clock()
@@ -63,22 +64,27 @@ pygame.display.set_caption("Limbo inspired test")
 
 # def player(x, y):
 #     screen.blit(playerImg, (x, y))
-running =False
+running =True
+jump=False
 while(True):
 
  #   screen.fill((225,225,225))
     #screen.fill((0,0,0))
-    
+    screen.blit(sky,(0,0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
 
+        
+
         if running==False:
             if event.type==pygame.KEYDOWN and event.key==pygame.K_SPACE:
-                running=True
+                Running =True
                 start_time=pygame.time.get_ticks()//1000
-
+        if event.type==pygame.KEYUP and event.key==pygame.K_SPACE:
+            Running = False
+            start_time=pygame.time.get_ticks()//1000
     if running:
         score=display_score()
         player.draw(screen)
@@ -86,7 +92,7 @@ while(True):
         keys=pygame.key.get_pressed()
 
     else:
-        screen.fill("Green")
+        screen.fill("White")
         score_message=font.render(f'Your Score:{score}',False,"Pink")
         score_rect=score_message.get_rect(center=(400,300))
 
