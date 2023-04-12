@@ -119,11 +119,17 @@ def display_score():
     return current_time
 
 def draw_floor():
+    #ditch
     pygame.draw.line(screen,"white",(0,500),(102,500))
     pygame.draw.line(screen,"white",(102,500),(102,600))
     pygame.draw.line(screen,"white",(102,600),(160,600))
     pygame.draw.line(screen,"white",(160,600),(160,500))
     pygame.draw.line(screen,"white",(160,500),(1500,500))
+    
+    #tower
+    pygame.draw.line(screen,"white",(500,500),(500,300))
+    pygame.draw.line(screen,"white",(500,300),(600,300))
+    pygame.draw.line(screen,"white",(600,300),(600,500))
 
 
 #creating group of player sprite class
