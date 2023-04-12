@@ -108,9 +108,9 @@ def display_score():
 def draw_floor():
     pygame.draw.line(screen,"white",(0,500),(102,500))
     pygame.draw.line(screen,"white",(102,500),(102,600))
-    pygame.draw.line(screen,"white",(102,600),(162,600))
-    pygame.draw.line(screen,"white",(162,600),(162,500))
-    pygame.draw.line(screen,"white",(162,500),(1500,500))
+    pygame.draw.line(screen,"white",(102,600),(160,600))
+    pygame.draw.line(screen,"white",(160,600),(160,500))
+    pygame.draw.line(screen,"white",(160,500),(1500,500))
 
 
 #creating group of player sprite class
