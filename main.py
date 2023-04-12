@@ -1,4 +1,5 @@
 import pygame
+#Comment
 from random import randint,choice
 from sys import exit
 pygame.init()
