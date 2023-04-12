@@ -38,12 +38,13 @@ class Player(pygame.sprite.Sprite):
             self.rect.y+=self.gravity
 
     def right(self,keys):
-        if self.rect.bottom<=500:
-            keys=pygame.key.get_pressed()
-            if keys[pygame.K_RIGHT]:
-                self.rect.x+=5
-                self.animation_state()
-
+            if self.rect.right>500 and self.rect.right<600 and self.rect.bottom>300:
+                pass
+            elif self.rect.bottom<=500:
+                keys=pygame.key.get_pressed()
+                if keys[pygame.K_RIGHT]:
+                    self.rect.x+=5
+                    self.animation_state()
     def left(self,keys):
         if self.rect.bottom<=500:
             if keys[pygame.K_LEFT]:
