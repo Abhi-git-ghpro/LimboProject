@@ -72,11 +72,11 @@ class Player(pygame.sprite.Sprite):
         self.image=self.player_walk[int(self.player_index)]
     def game_over(self):
         if self.rect.bottom>600:
-            global Running
+            global Running,collision_cart
             Running=False
             self.rect.midbottom=(80,500)
             collision_cart=300
-            #print(self.rect.bottom)
+
     def collsion_cart_player(self):
         global collision_cart
         if (self.rect.x-collision_cart<=128 and event.type==pygame.KEYDOWN and event.key==pygame.K_UP):
@@ -89,48 +89,13 @@ class Player(pygame.sprite.Sprite):
         self.apply_gravity()
         self.game_over()
         self.collsion_cart_player()
-
-# class obstacle(pygame.sprite.Sprite):
-#     def __init__(self,type):
-#         super().__init__()
-#         if type=='enemy':
-#             enemy=pygame.image.load('obstacle.png')
-#             self.enemy_walk=[enemy]
-
-#         self.animation_index=0
-#         self.image=self.enemy_walk[self.animation_index]
-#         self.rect=self.image.get_rect(midbottom=(randint(900,1100),500))                              
-
-#     def animation_state(self):
-#         self.animation_index+=0.1
-#         if self.animation_index>len(self.enemy_walk):
-#             self.animation_index=0
-#         self.image=self.enemy_walk[int(self.animation_index)]
-
-#     def destory(self):
-#         if self.rect.x<=-100:
-#             self.kill()
-
-#     def update(self):
-#         self.animation_state()
-#         self.rect.x-=6
-#         self.destory()
-    
+  
 class cart(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image=pygame.image.load('cart.png')
         self.rect=self.image.get_rect(midbottom=(collision_cart,500))
 
-    # def draw(self):
-    #     self.draw(screen)
-   
-    # def cart_collision(self,other):
-    #     if other.rect.x-self.rect.x<=64 and event.type==pygame.KEYDOWN and event.key==pygame.K_UP:
-    #         other.rect.x=self.rect.x=5
-   
-        
-        # self.cart_collision(player)
     def makethismove(self):
         global collision_cart
         self.rect.x=collision_cart
@@ -154,15 +119,7 @@ def draw_floor():
     pygame.draw.line(screen,"white",(500,500),(500,300))
     pygame.draw.line(screen,"white",(500,300),(600,300))
     pygame.draw.line(screen,"white",(600,300),(600,500))
-
-#collision
-# def collision():
-#     if pygame.sprite.spritecollide(player.sprite,cart1.sprite,False) and event.type==pygame.KEYDOWN and event.key==pygame.K_UP:
-#         cart1.rect.x-player.rect.x=64
-        
-
-
-
+     
 #creating group of player sprite class
 player=pygame.sprite.GroupSingle()
 player.add(Player())
@@ -174,15 +131,12 @@ cart1.add(cart())
 #Icon and title of game
 pygame.display.set_caption("Limbo inspired test")
 
-#obstacle_timer=pygame.USEREVENT+1
-#pygame.time.set_timer(obstacle_timer,1500)
-
 enemy_animation_timer=pygame.USEREVENT+2
 pygame.time.set_timer(enemy_animation_timer,500)
 
 Running =False  #keeps track of state of game
 while(True):
-    #screen.blit(sky,(0,0))
+
     screen.fill((200,0,50))
 
     for event in pygame.event.get():
@@ -195,10 +149,6 @@ while(True):
             if event.type==pygame.KEYDOWN and event.key==pygame.K_SPACE:
                 Running =True
                 start_time=pygame.time.get_ticks()//1000
-
-        #else:
-            #if event.type==obstacle_timer:
-             #   obstacle_group.add(obstacle(choice(['enemy'])))
 
     if Running:
         score=display_score()
