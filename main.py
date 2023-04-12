@@ -72,7 +72,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom>600:
             global Running
             Running=False
-            #print(self.rect.bottom)
+            self.rect.midbottom=(80,500)
 
     def update(self):
         self.floor_fun()
@@ -150,7 +150,6 @@ Running =False  #keeps track of state of game
 while(True):
     #screen.blit(sky,(0,0))
     screen.fill((200,0,50))
-    print(Running)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -178,7 +177,6 @@ while(True):
     
 
     else:
-        #print("HERE")
 
         screen.fill("White")
         score_message=font.render(f'Your Score:{score}',False,"Pink")
