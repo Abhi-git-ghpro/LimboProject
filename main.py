@@ -30,6 +30,8 @@ class Player(pygame.sprite.Sprite):
     def floor_fun(self):
         if(self.rect.x>90 and self.rect.x<100):
             self.floor=600
+        elif pygame.sprite.spritecollide(player.sprite,cart1,False):
+            self.floor=458
         else:
             self.floor=500
 
@@ -84,6 +86,8 @@ class Player(pygame.sprite.Sprite):
             collision_cart=self.rect.x+64
 
     def update(self):
+        if self.rect.bottom>self.floor:
+            self.rect.bottom=self.floor
         self.floor_fun()
         self.movement()
         self.apply_gravity()
