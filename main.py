@@ -30,17 +30,19 @@ class Player(pygame.sprite.Sprite):
     def floor_fun(self):
         if(self.rect.x>90 and self.rect.x<100):
             self.floor=600
+        elif(self.rect.right>500 and self.rect.left<600 and self.rect.y<300):
+            self.floor=300
         else:
             self.floor=500
 
     def jump(self,keys):
         keys=pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom==self.floor:
-            self.gravity=-15
+            self.gravity=-30
             self.rect.y+=self.gravity
 
     def right(self,keys):
-            if self.rect.right>500 and self.rect.right<600 and self.rect.bottom>300:
+            if self.rect.right>500 and self.rect.right<600 and self.rect.bottom>350:
                 pass
             elif self.rect.bottom<=500:
                 keys=pygame.key.get_pressed()
@@ -48,6 +50,8 @@ class Player(pygame.sprite.Sprite):
                     self.rect.x+=5
                     self.animation_state()
     def left(self,keys):
+        if self.rect.x<=664 and self.rect.x>=438: pass
+        print(self.rect.left)
         if self.rect.bottom<=500:
             if keys[pygame.K_LEFT]:
                 self.rect.x-=5
@@ -119,6 +123,13 @@ def draw_floor():
     pygame.draw.line(screen,"white",(500,500),(500,300))
     pygame.draw.line(screen,"white",(500,300),(600,300))
     pygame.draw.line(screen,"white",(600,300),(600,500))
+    #hava mein square
+    pygame.draw.line(screen,"white",(748,300),(748,200))
+    pygame.draw.line(screen,"white",(748,200),(848,200))
+    pygame.draw.line(screen,"white",(848,200),(848,300))
+    pygame.draw.line(screen,"white",(848,300),(748,300))
+
+
      
 #creating group of player sprite class
 player=pygame.sprite.GroupSingle()
