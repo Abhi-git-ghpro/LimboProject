@@ -67,42 +67,53 @@ class Player(pygame.sprite.Sprite):
             if self.player_index>len(self.player_walk):
                 self.player_index=0
         self.image=self.player_walk[int(self.player_index)]
+    def game_over(self):
+        if self.rect.bottom>600:
+            global Running
+            Running=False
+            #print(self.rect.bottom)
 
     def update(self):
         self.floor_fun()
         self.movement()
         self.apply_gravity()
+        self.game_over()
 
-class obstacle(pygame.sprite.Sprite):
-    def __init__(self,type):
+# class obstacle(pygame.sprite.Sprite):
+#     def __init__(self,type):
+#         super().__init__()
+#         if type=='enemy':
+#             enemy=pygame.image.load('obstacle.png')
+#             self.enemy_walk=[enemy]
+
+#         self.animation_index=0
+#         self.image=self.enemy_walk[self.animation_index]
+#         self.rect=self.image.get_rect(midbottom=(randint(900,1100),500))                              
+
+#     def animation_state(self):
+#         self.animation_index+=0.1
+#         if self.animation_index>len(self.enemy_walk):
+#             self.animation_index=0
+#         self.image=self.enemy_walk[int(self.animation_index)]
+
+#     def destory(self):
+#         if self.rect.x<=-100:
+#             self.kill()
+
+#     def update(self):
+#         self.animation_state()
+#         self.rect.x-=6
+#         self.destory()
+    
+class cart(pygame.sprite.Sprite):
+    def __init__(self):
         super().__init__()
-        if type=='enemy':
-            enemy=pygame.image.load('obstacle.png')
-            self.enemy_walk=[enemy]
-
-        self.animation_index=0
-        self.image=self.enemy_walk[self.animation_index]
-        self.rect=self.image.get_rect(midbottom=(randint(900,1100),500))                              
-
-    def animation_state(self):
-        self.animation_index+=0.1
-        if self.animation_index>len(self.enemy_walk):
-            self.animation_index=0
-        self.image=self.enemy_walk[int(self.animation_index)]
-
-    def destory(self):
-        if self.rect.x<=-100:
-            self.kill()
-
-    def update(self):
-        self.animation_state()
-        self.rect.x-=6
-        self.destory()
-
+        self.cart_img=pygame.image.load('cart.png')
+        self.rect=self.cart_img.get_rect(midbottom=(80,500))
 def display_score():
     current_time=pygame.time.get_ticks()//1000-start_time
     score_surf=font.render(f'Score:{current_time}',False,"Blue")
-    score_rect=score_surf.get_rect(center=(400,50))
+    score_rect=score_surf.get_rect(center=(750,400))
     screen.blit(score_surf,score_rect)
     return current_time
 
@@ -122,15 +133,17 @@ obstacle_group=pygame.sprite.Group()
 #Icon and title of game
 pygame.display.set_caption("Limbo inspired test")
 
-obstacle_timer=pygame.USEREVENT+1
-pygame.time.set_timer(obstacle_timer,1500)
+#obstacle_timer=pygame.USEREVENT+1
+#pygame.time.set_timer(obstacle_timer,1500)
 
 enemy_animation_timer=pygame.USEREVENT+2
 pygame.time.set_timer(enemy_animation_timer,500)
 
 Running =False  #keeps track of state of game
 while(True):
-    screen.blit(sky,(0,0))
+    #screen.blit(sky,(0,0))
+    screen.fill((200,0,50))
+    print(Running)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -143,9 +156,9 @@ while(True):
                 Running =True
                 start_time=pygame.time.get_ticks()//1000
 
-        else:
-            if event.type==obstacle_timer:
-                obstacle_group.add(obstacle(choice(['enemy'])))
+        #else:
+            #if event.type==obstacle_timer:
+             #   obstacle_group.add(obstacle(choice(['enemy'])))
 
     if Running:
         score=display_score()
@@ -155,15 +168,26 @@ while(True):
         obstacle_group.draw(screen)
         obstacle_group.update()
 
+    
+
     else:
+        #print("HERE")
+
         screen.fill("White")
         score_message=font.render(f'Your Score:{score}',False,"Pink")
-        score_rect=score_message.get_rect(center=(400,500))
+        score_over=font.render(f'Game Over',False,"Red")
+        game_over_rect=score_over.get_rect(center=(750,200))
+        score_rect=score_message.get_rect(center=(750,400))
         game_message=font.render("Press space to start game",False,"Pink")
-        game_message_rect=game_message.get_rect(center=(400,500))
+        game_message_rect=game_message.get_rect(center=(750,400))
 
         if score:
+            
+            screen.blit(score_over,game_over_rect)
+            pygame.time.delay(1* 500)
             screen.blit(score_message,score_rect)
+            pygame.time.delay(1* 500)
+            
         else:
             screen.blit(game_message,game_message_rect)
     pygame.display.update()
