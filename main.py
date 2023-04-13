@@ -4,7 +4,7 @@ from random import randint,choice
 from sys import exit
 pygame.init()
 
-sky=pygame.image.load('background.png')
+sky=pygame.image.load('limbo_bg.jpg')
 font=pygame.font.Font(None,50)
 screen = pygame.display.set_mode((1500, 800))
 clock=pygame.time.Clock()
@@ -17,8 +17,11 @@ collision_cart=300
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        player_walk_1=pygame.image.load('player1.png')
-        player_walk_2=pygame.image.load('player2.png')
+        player_walk_1=pygame.image.load('player1.png').convert_alpha()
+        player_walk_1.set_colorkey((225,0,0))
+        player_walk_2=pygame.image.load('player2.png').convert_alpha()
+        player_walk_2.set_colorkey((225,0,0))
+        player_hold=pygame.image.load('player_hold.png').convert()
         self.player_walk=[player_walk_1,player_walk_2]
         self.player_index=0
         self.floor=300
@@ -27,23 +30,27 @@ class Player(pygame.sprite.Sprite):
         self.rect=self.image.get_rect(midbottom=(80,500))
         self.gravity=0
 
+        #Improving the jump mechanics
+        self.jumping=False
     def floor_fun(self):
         if(self.rect.x>90 and self.rect.x<100):
             self.floor=600
-        elif pygame.sprite.spritecollide(player.sprite,cart1,False):
+        elif pygame.sprite.spritecollide(self,cart1,False):
+            hit=pygame.sprite.spritecollide(self,cart1,False)
             keys=pygame.key.get_pressed()
-            if keys[pygame.K_UP] and keys[pygame.K_RIGHT]:
+            if keys[pygame.K_UP] and (keys[pygame.K_RIGHT]) or (keys[pygame.K_UP] and keys[pygame.K_LEFT]) :
                 pass
-            else :self.floor=458
+            else :self.floor=hit[0].rect.top+1
         elif(self.rect.right>500 and self.rect.left<600 and self.rect.y<300):
             self.floor=300
         else:
             self.floor=500
 
-    def jump(self,keys):
+    def jump(self):
         keys=pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] and self.rect.bottom==self.floor:
-            self.gravity=-15
+        if keys[pygame.K_SPACE] and self.rect.bottom==self.floor and not self.jumping:
+            self.jumping=True
+            self.gravity=-16.5
             self.rect.y+=self.gravity
 
     def right(self,keys):
@@ -56,7 +63,7 @@ class Player(pygame.sprite.Sprite):
                     self.animation_state()
     def left(self,keys):
 
-        print(self.rect.left)
+        #print(self.rect.left)
         if self.rect.bottom<=500:
             if self.rect.left>500 and self.rect.left<590 and self.rect.bottom>350: pass
             elif keys[pygame.K_LEFT]:
@@ -65,14 +72,20 @@ class Player(pygame.sprite.Sprite):
             
     def movement(self):
         keys=pygame.key.get_pressed()
-        self.jump(keys)
         self.right(keys)
         self.left(keys)
 
+    def cancel_jump(self):
+        if self.jumping:
+            if self.gravity<-2:
+                self.gravity=-2
     def apply_gravity(self):
         if self.rect.bottom<self.floor:
             self.gravity+=1
             self.rect.y+=self.gravity
+    def landing(self):
+        if self.rect.bottom==self.floor:
+            self.jumping=False
 
     def animation_state(self):
         if self.rect.bottom==self.floor:
@@ -89,12 +102,21 @@ class Player(pygame.sprite.Sprite):
 
     def collsion_cart_player(self):
         global collision_cart
-        if (self.floor==500 and self.rect.x-collision_cart<=64 and event.type==pygame.KEYDOWN and event.key==pygame.K_UP ):
+        if (self.floor==500 and self.rect.x-collision_cart<=128 and event.type==pygame.KEYDOWN and event.key==pygame.K_UP ):
             keys=pygame.key.get_pressed()
             if (keys[pygame.K_RIGHT] and keys[pygame.K_UP]):
                 collision_cart=self.rect.x+64
             if (keys[pygame.K_LEFT] and keys[pygame.K_UP]):
                 collision_cart=self.rect.right -64
+    def collision_2(self):
+        if self.rect.colliderect(cart1.sprite):
+            keys=pygame.key.get_pressed()
+            if (keys[pygame.K_RIGHT] and keys[pygame.K_i]):
+                collision_cart=self.rect.x+64
+            if (keys[pygame.K_LEFT] and keys[pygame.K_i]):
+                collision_cart=self.rect.right -64    
+                print("collided")
+
 
     def update(self):
         if self.rect.bottom>self.floor:
@@ -104,11 +126,13 @@ class Player(pygame.sprite.Sprite):
         self.apply_gravity()
         self.game_over()
         self.collsion_cart_player()
+        self.collision_2()
+        self.landing()
   
 class cart(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image=pygame.image.load('cart.png')
+        self.image=pygame.image.load('cart.png').convert_alpha()
         self.rect=self.image.get_rect(midbottom=(collision_cart,500))
 
     def makethismove(self):
@@ -160,11 +184,17 @@ Running =False  #keeps track of state of game
 while(True):
 
     screen.fill((200,0,50))
-
+    #screen.blit(sky,(0,0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        if event.type==pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                player.sprite.jump()
+        if event.type == pygame.KEYUP:    
+            if event.key == pygame.K_SPACE:
+                player.sprite.cancel_jump()     #Cancel the jump when release space button
         
         #intro page
         if Running==False:
