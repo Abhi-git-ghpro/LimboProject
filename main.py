@@ -31,7 +31,10 @@ class Player(pygame.sprite.Sprite):
         if(self.rect.x>90 and self.rect.x<100):
             self.floor=600
         elif pygame.sprite.spritecollide(player.sprite,cart1,False):
-            self.floor=458
+            keys=pygame.key.get_pressed()
+            if keys[pygame.K_UP] and keys[pygame.K_RIGHT]:
+                pass
+            else :self.floor=458
         elif(self.rect.right>500 and self.rect.left<600 and self.rect.y<300):
             self.floor=300
         else:
@@ -40,7 +43,7 @@ class Player(pygame.sprite.Sprite):
     def jump(self,keys):
         keys=pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom==self.floor:
-            self.gravity=-30
+            self.gravity=-15
             self.rect.y+=self.gravity
 
     def right(self,keys):
@@ -52,10 +55,11 @@ class Player(pygame.sprite.Sprite):
                     self.rect.x+=5
                     self.animation_state()
     def left(self,keys):
-        if self.rect.x<=664 and self.rect.x>=438: pass
+
         print(self.rect.left)
         if self.rect.bottom<=500:
-            if keys[pygame.K_LEFT]:
+            if self.rect.left>500 and self.rect.left<590 and self.rect.bottom>350: pass
+            elif keys[pygame.K_LEFT]:
                 self.rect.x-=5
                 self.animation_state()
             
@@ -85,9 +89,12 @@ class Player(pygame.sprite.Sprite):
 
     def collsion_cart_player(self):
         global collision_cart
-        if (self.rect.x-collision_cart<=128 and event.type==pygame.KEYDOWN and event.key==pygame.K_UP):
-            
-            collision_cart=self.rect.x+64
+        if (self.floor==500 and self.rect.x-collision_cart<=64 and event.type==pygame.KEYDOWN and event.key==pygame.K_UP ):
+            keys=pygame.key.get_pressed()
+            if (keys[pygame.K_RIGHT] and keys[pygame.K_UP]):
+                collision_cart=self.rect.x+64
+            if (keys[pygame.K_LEFT] and keys[pygame.K_UP]):
+                collision_cart=self.rect.right -64
 
     def update(self):
         if self.rect.bottom>self.floor:
